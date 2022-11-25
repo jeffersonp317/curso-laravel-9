@@ -9,6 +9,7 @@ use App\Http\Requests\StoreUpdateUserFormRequest;
 
 class UserController extends Controller
 {
+    protected $model;
 
     public function __construct(User $user)
     {
