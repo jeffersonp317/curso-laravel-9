@@ -18,13 +18,13 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        
+
         $users = $this->model
-                        ->getUsers(
-                            search: $request->search ?? ''
-                        );
-                        
-        
+            ->getUsers(
+                search: $request->search ?? ''
+            );
+
+
 
         return view('users.index', compact('users'));
     }
@@ -34,9 +34,9 @@ class UserController extends Controller
 
         // $user = User::where('id', $id)->first();
 
-        if(!$user = $this->model->find($id))
+        if (!$user = $this->model->find($id))
             return redirect()->route('users.index');
-        
+
 
         return view('users.show', compact('user'));
     }
@@ -51,6 +51,10 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
 
+        if ($request->image) {
+            $data['image'] = $request->image->store('users');
+        }
+
         $this->model->create($data);
 
         return redirect()->route('users.index');
@@ -58,20 +62,20 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        if(!$user = User::find($id))
+        if (!$user = User::find($id))
             return redirect()->route('users.index');
-        
+
 
         return view('users.edit', compact('user'));
     }
-    
+
     public function update(StoreUpdateUserFormRequest $request, $id)
     {
-        if(!$user = User::find($id))
+        if (!$user = User::find($id))
             return redirect()->route('users.index');
-        
+
         $data = $request->only('name', 'email');
-        if($request->passaword)
+        if ($request->passaword)
             $data['password'] = bcrypt($request->password);
 
         $user->update($data);
@@ -82,11 +86,11 @@ class UserController extends Controller
     public function delete($id)
     {
 
-        if(!$user = User::find($id))
+        if (!$user = User::find($id))
             return redirect()->route('users.index');
-        
-            $user->delete();
 
-            return redirect()->route('users.index');
+        $user->delete();
+
+        return redirect()->route('users.index');
     }
 }
